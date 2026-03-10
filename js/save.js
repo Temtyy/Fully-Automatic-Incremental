@@ -1,5 +1,5 @@
 let player = {
-    points: new Decimal("1e154"),
+    points: new Decimal("1e165"),
     superPoints: new Decimal(0),
     superPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     upgrades: []

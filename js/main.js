@@ -1,4 +1,4 @@
-let bulkBuyAmount = 256;
+let bulkBuyAmount = 1024;
 
 $( document ).ready(function() {
     //startup stuff
@@ -176,6 +176,8 @@ function getPointGain(deltaTime) {
     if (upgradeMaxed(32)) gain = gain.pow(1.05);
     if (hasLevel(34, 1)) gain = gain.mul(new Decimal(25).pow(level(34)));
     if (hasLevel(35, 1)) gain = gain.mul(new Decimal(1.1).pow(level(35)));
+    if (hasLevel(36, 1)) gain = gain.pow(new Decimal(1.05).pow(level(36)));
+    if (hasLevel(37, 1)) gain = gain.mul(new Decimal(1.03).pow(level(37)));
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }

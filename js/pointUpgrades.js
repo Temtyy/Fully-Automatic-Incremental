@@ -424,10 +424,34 @@ let upgrades = [
         name: "One without a huge level cap",
         description: "Multiply point gain by x1.1.",
         cost() {
-            return new Decimal(1e154).mul(new Decimal(1.025).pow(this.level.pow(1.5)));
+            return new Decimal(1e154).mul(new Decimal(1.025).pow(this.level.pow(1.35)));
         },
         maxLevel: new Decimal(100),
         previousUpg: 33,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 36,
+        name: "High cost, high reward",
+        description: "Raise point gain by ^1.05.",
+        cost() {
+            return new Decimal(1e162).pow(this.level.add(1).pow(0.5));
+        },
+        maxLevel: new Decimal(8),
+        previousUpg: 35,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 37,
+        name: "Low cost, low reward",
+        description: "Multiply point gain by x1.03.",
+        cost() {
+            return new Decimal(1e180).mul(new Decimal(1.04).pow(this.level));
+        },
+        maxLevel: new Decimal(8).pow(4),
+        previousUpg: 35,
         currency: "points",
         spendsCurrency: false
     }),
