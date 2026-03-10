@@ -1,0 +1,434 @@
+class upgrade {
+    buyUpgrade() {
+        if (this.level.lt(this.maxLevel) && player[this.currency].gte(this.cost())) {
+            if (typeof(this.spendsCurrency) == "undefined" || this.spendsCurrency == true) player[this.currency] = player[this.currency].sub(this.cost());
+            this.level = this.level.add(1);
+            
+            if (this.currency != "points") {
+                if (typeof(this.spendsCurrency) == "undefined" || this.spendsCurrency == true) player[this.currency + "Subtracted"] = player[this.currency + "Subtracted"].add(this.cost());
+            }
+
+            if (player.upgrades[this.id]) player.upgrades[this.id] = player.upgrades[this.id].add(1);
+            else player.upgrades[this.id] = new Decimal(1);
+            $( "#upgrade-cost-" + this.id ).text(format(this.cost()));
+            $( "#upgrade-level-disp-" + this.id ).text(format(this.level, 0));
+        }
+    }
+    constructor(data) {
+        Object.assign(this, data);
+        this.level = new Decimal(0);
+    }
+}
+
+let upgrades = [
+    new upgrade({
+        id: 0,
+        name: "The first one",
+        description: "Start gaining one point per second.",
+        cost() {
+            return new Decimal(0);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: -1,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 1,
+        name: "The second one",
+        description: "Multiply point gain by x2.",
+        cost() {
+            return new Decimal(10);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 0,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 2,
+        name: "The third one",
+        description: "Multiply point gain by x3.",
+        cost() {
+            return new Decimal(15);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 1,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 3,
+        name: "The repeatable one",
+        description: "Multiply point gain by x1.25 every level.",
+        cost() {
+            return new Decimal(30).mul(new Decimal(2).pow(this.level));
+        },
+        maxLevel: new Decimal(10),
+        previousUpg: 1,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 4,
+        name: "The fourth one, I think?",
+        description: "Multiply point gain by x4.",
+        cost() {
+            return new Decimal(100);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 2,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 5,
+        name: "The something one",
+        description: "Multiply point gain by x1.1 every level.",
+        cost() {
+            return new Decimal(400).mul(new Decimal(1.2).pow(this.level));
+        },
+        maxLevel: new Decimal(100),
+        previousUpg: 4,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 6,
+        name: "A little boost",
+        description: "Multiply point gain by x5.",
+        cost() {
+            return new Decimal(1000);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 4,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 7,
+        name: "Repeat",
+        description: "Multiply point gain by x1.5 every level.",
+        cost() {
+            return new Decimal(1000).mul(new Decimal(2).pow(this.level));
+        },
+        maxLevel: new Decimal(50),
+        previousUpg: 3,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 8,
+        name: "Repeater",
+        description: "Multiply point gain by x1.25 every level.",
+        cost() {
+            return new Decimal(1e15).mul(new Decimal(1.5).pow(this.level));
+        },
+        maxLevel: new Decimal(100),
+        previousUpg: 5,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 9,
+        name: "Repeaterer",
+        description: "Multiply point gain by x1.125 every level.",
+        cost() {
+            return new Decimal(1e18).mul(new Decimal(1.25).pow(this.level));
+        },
+        maxLevel: new Decimal(1000),
+        previousUpg: 5,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 10,
+        name: "Need some help?",
+        description: "Multiply point gain by x3 every level.",
+        cost() {
+            return new Decimal(1e20).mul(new Decimal(2.5).pow(this.level));
+        },
+        maxLevel: new Decimal(4),
+        previousUpg: 7,
+        currency: "points"
+    }),
+    new upgrade({
+        id: 11,
+        name: "Need some help?",
+        description: "Multiply point gain by x1.05 every level.",
+        cost() {
+            return new Decimal(1e38).mul(new Decimal(2).pow(this.level));
+        },
+        maxLevel: new Decimal(1000),
+        previousUpg: 8,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 12,
+        name: "Because I can help!",
+        description: "Raise point gain by ^1.01 every level.",
+        cost() {
+            return new Decimal(1e40).mul(this.level.add(1).pow(this.level));
+        },
+        maxLevel: new Decimal(25),
+        previousUpg: 8,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 13,
+        name: "The final push to 1e100!",
+        description: "Multiply your points by x2 every level.",
+        cost() {
+            return new Decimal(1e85).mul(new Decimal(2.1).pow(this.level));
+        },
+        maxLevel: new Decimal(16),
+        previousUpg: 12,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 14,
+        name: "New points?",
+        description: "Multiply your point gain by x5.",
+        cost() {
+            return new Decimal(2);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 13,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 15,
+        name: "New points!",
+        description: "Multiply your point gain by x4.",
+        cost() {
+            return new Decimal(5);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 14,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 16,
+        name: "Pretty cool, right?",
+        description: "Multiply your point gain by x3.",
+        cost() {
+            return new Decimal(10);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 15,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 17,
+        name: "Unnamed upgrade #1",
+        description: "Multiply your point gain by x&pi;<sup>&pi;</sup>.",
+        cost() {
+            return new Decimal(20);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 16,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 18,
+        name: "Unnamed upgrade #2",
+        description: "Raise you point gain by ^1.01.",
+        cost() {
+            return new Decimal(25);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 17,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 19,
+        name: "One with a huge level cap",
+        description: "Multiply point gain by x1.001 every level.",
+        cost() {
+            return new Decimal(1e118).mul(new Decimal(1.005).pow(this.level));
+        },
+        maxLevel: new Decimal(100000),
+        previousUpg: 9,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 20,
+        name: "Unnamed upgrade #3",
+        description: "Multiply point gain by x2.5 every level.",
+        cost() {
+            return new Decimal(25).mul(new Decimal(2).pow(this.level));
+        },
+        maxLevel: new Decimal(5),
+        previousUpg: 18,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 21,
+        name: "Unnamed upgrade #4",
+        description: "Multiply point gain by x3.5 every level.",
+        cost() {
+            return new Decimal(40).mul(new Decimal(3).pow(this.level));
+        },
+        maxLevel: new Decimal(4),
+        previousUpg: 18,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 22,
+        name: "Unnamed upgrade #5",
+        description: "Multiply point gain by x4.5 every level.",
+        cost() {
+            return new Decimal(75).mul(new Decimal(4).pow(this.level));
+        },
+        maxLevel: new Decimal(3),
+        previousUpg: 18,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 23,
+        name: "Unnamed upgrade #6",
+        description: "Multiply point gain by x5.5 every level.",
+        cost() {
+            return new Decimal(150).mul(new Decimal(5).pow(this.level));
+        },
+        maxLevel: new Decimal(2),
+        previousUpg: 18,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 24,
+        name: "Unnamed upgrade #7",
+        description: "Multiply point gain by x6.5 every level.",
+        cost() {
+            return new Decimal(275);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 18,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 25,
+        name: "Something new?",
+        description: "Multiply super point gain by x1.25 every level.",
+        cost() {
+            return new Decimal(650).mul(new Decimal(2).pow(this.level));
+        },
+        maxLevel: new Decimal(16),
+        previousUpg: 20,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 26,
+        name: "A second super point multiplier",
+        description: "Multiply super point gain by x1.128 every level.",
+        cost() {
+            return new Decimal(2000).mul(new Decimal(1.13).pow(this.level));
+        },
+        maxLevel: new Decimal(8),
+        previousUpg: 22,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 27,
+        name: "Something new for normal points",
+        description: "Unlock new point upgrades.",
+        cost() {
+            return new Decimal(9500);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 26,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 28,
+        name: "Back to the points",
+        description: "Multiply point gain by x&pi; every level.",
+        cost() {
+            return new Decimal(6e131).mul(new Decimal(Math.PI + 0.1).pow(this.level));
+        },
+        maxLevel: new Decimal(3),
+        previousUpg: 27,
+        currency: "points",
+    }),
+    new upgrade({
+        id: 29,
+        name: "One with a different cost formula",
+        description: "Multiply point gain by x10 every level.",
+        cost() {
+            return new Decimal(1e133).mul(this.level.add(1).pow(this.level.pow(1.56)));
+        },
+        maxLevel: new Decimal(5),
+        previousUpg: 28,
+        currency: "points",
+    }),
+    new upgrade({
+        id: 30,
+        name: "A huge super point boost",
+        description: "Increase super point gain exponent by +0.025",
+        cost() {
+            return new Decimal(2.5e140);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 29,
+        currency: "points",
+    }),
+    new upgrade({
+        id: 31,
+        name: "Another huge super point boost",
+        description: "Divide required point base by 1e4.",
+        cost() {
+            return new Decimal(3e140);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 30,
+        currency: "points",
+    }),
+    new upgrade({
+        id: 32,
+        name: "A point boost",
+        description: "Raise point gain by ^1.05.",
+        cost() {
+            return new Decimal(35000000);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 31,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 33,
+        name: "Huge super point boost again",
+        description: "Divide required point base by 1e6.",
+        cost() {
+            return new Decimal(6e8);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 32,
+        currency: "superPoints",
+    }),
+    new upgrade({
+        id: 34,
+        name: "This one has a different cost formula",
+        description: "Multiply point gain by x25.",
+        cost() {
+            return new Decimal(3e9).mul(this.level.add(1).pow(this.level.pow(0.9)));
+        },
+        maxLevel: new Decimal(10),
+        previousUpg: 33,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 35,
+        name: "One without a huge level cap",
+        description: "Multiply point gain by x1.1.",
+        cost() {
+            return new Decimal(1e154).mul(new Decimal(1.025).pow(this.level.pow(1.5)));
+        },
+        maxLevel: new Decimal(100),
+        previousUpg: 33,
+        currency: "points",
+        spendsCurrency: false
+    }),
+]
