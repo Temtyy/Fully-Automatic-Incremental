@@ -3,6 +3,7 @@
     --bg-color: #FFFFFF;
     --super-point-color: #00ffe1;
     --achievement-bg-color: #444;
+    --ultra-point-color: #ff7f16;
 }
 
 body {
@@ -115,4 +116,15 @@ h5 {
         color-mix(in srgb, var(--super-point-color) 40%, var(--bg-color)), 
         color-mix(in srgb, var(--super-point-color) 25%, var(--bg-color))
     );
+}
+
+#ultraPoints, #UPboost {
+    font-size: 150%;
+    text-shadow: 2px 2px 10px var(--ultra-point-color),
+        -2px -2px 10px var(--ultra-point-color);
+    color: var(--ultra-point-color);
+}
+
+#UPboost {
+    font-size: 115%;
 }

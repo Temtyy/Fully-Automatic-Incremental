@@ -48,9 +48,7 @@ function mainLoop(currentTime) {
     for (let i = 0; i < upgrades.length; i++) {
         if ((upgrades[i].previousUpg == -1 || upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)) && upgrades[i].level.lt(upgrades[i].maxLevel)) {
             $( "#upgrade-" + i ).removeClass("hidden");
-            for (let k = 0; k < bulkBuyAmount; k++) {
-                upgrades[i].buyUpgrade();
-            }
+            for (let k = 0; k < bulkBuyAmount && upgrades[i].buyUpgrade(); k++) {}
         }
         else {
             $( "#upgrade-" + i ).addClass("hidden");
@@ -74,6 +72,12 @@ function mainLoop(currentTime) {
     player.superPoints = getSuperPointGain();
     $("#superPoints").text(format(player.superPoints));
     $("#nextSP").text(format(reverseSuperPointGain()));
+    //ultra points
+    if (player.superPoints.gte(5e19) || player.ultraPoints.gte(0.00001)) $( "#ultraPointSection").removeClass("hidden");
+    player.ultraPoints = getUltraPointGain();
+    $("#ultraPoints").text(format(player.ultraPoints));
+    $("#UPboost").text(format(GetUltraPointEffect()));
+    $("#nextUP").text(format(reverseUltraPointGain()));
 }
 
 function generateUpgrade(id, section) {
@@ -178,6 +182,9 @@ function getPointGain(deltaTime) {
     if (hasLevel(35, 1)) gain = gain.mul(new Decimal(1.1).pow(level(35)));
     if (hasLevel(36, 1)) gain = gain.pow(new Decimal(1.05).pow(level(36)));
     if (hasLevel(37, 1)) gain = gain.mul(new Decimal(1.03).pow(level(37)));
+    if (hasLevel(38, 1)) gain = gain.mul(new Decimal(1.5).pow(level(38)));
+    if (hasLevel(39, 1)) gain = gain.mul(new Decimal(5.25).pow(level(39)));
+    gain = gain.mul(GetUltraPointEffect());
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }
@@ -209,4 +216,29 @@ function reverseSuperPointGain() {
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);
     return points;
+}
+
+function getUltraPointGain() {
+    let points = player.superPoints;
+    let exponent = new Decimal(0.4);
+    let base = new Decimal(1e20);
+    points = points.div(base);
+    points = points.pow(exponent);
+    points = points.floor().sub(player.ultraPointsSubtracted).max(player.ultraPoints);
+    return points;
+}
+
+function reverseUltraPointGain() {
+    let points = player.ultraPoints.add(1).add(player.ultraPointsSubtracted);
+    let exponent = new Decimal(0.4);
+    let base = new Decimal(1e20);
+    points = points.pow(new Decimal(1).div(exponent));
+    points = points.mul(base);
+    return points;
+}
+
+function GetUltraPointEffect() {
+    let points = player.ultraPoints.add(1);
+    let exponent = new Decimal(0.5);
+    return points.pow(exponent);
 }

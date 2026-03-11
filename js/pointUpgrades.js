@@ -12,7 +12,9 @@ class upgrade {
             else player.upgrades[this.id] = new Decimal(1);
             $( "#upgrade-cost-" + this.id ).text(format(this.cost()));
             $( "#upgrade-level-disp-" + this.id ).text(format(this.level, 0));
+            return true;
         }
+        return false;
     }
     constructor(data) {
         Object.assign(this, data);
@@ -412,7 +414,7 @@ let upgrades = [
         name: "This one has a different cost formula",
         description: "Multiply point gain by x25.",
         cost() {
-            return new Decimal(3e9).mul(this.level.add(1).pow(this.level.pow(0.9)));
+            return new Decimal(3e9).mul(this.level.add(1).pow(this.level.pow(0.9).pow(this.level.gte(7) ? this.level.pow(0.1) : 1)));
         },
         maxLevel: new Decimal(10),
         previousUpg: 33,
@@ -436,7 +438,7 @@ let upgrades = [
         name: "High cost, high reward",
         description: "Raise point gain by ^1.05.",
         cost() {
-            return new Decimal(1e162).pow(this.level.add(1).pow(0.5));
+            return new Decimal(1e162).pow(this.level.add(1).pow(new Decimal(0.235).mul(this.level.gte(2) ? this.level.sub(1) : 1)));
         },
         maxLevel: new Decimal(8),
         previousUpg: 35,
@@ -448,11 +450,34 @@ let upgrades = [
         name: "Low cost, low reward",
         description: "Multiply point gain by x1.03.",
         cost() {
-            return new Decimal(1e180).mul(new Decimal(1.04).pow(this.level));
+            return new Decimal(1e180).mul(new Decimal(1.06).pow(this.level));
         },
-        maxLevel: new Decimal(8).pow(4),
+        maxLevel: new Decimal(64),
         previousUpg: 35,
         currency: "points",
         spendsCurrency: false
+    }),
+    new upgrade({
+        id: 38,
+        name: "Mid cost, mid reward",
+        description: "Multiply point gain by x1.5.",
+        cost() {
+            return new Decimal(1e182).mul(new Decimal(1.75).pow(this.level));
+        },
+        maxLevel: new Decimal(16),
+        previousUpg: 37,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 39,
+        name: "This one spends points?",
+        description: "Multiply point gain by x5.25.",
+        cost() {
+            return new Decimal(1e188).mul(new Decimal(20).pow(this.level));
+        },
+        maxLevel: new Decimal(10),
+        previousUpg: 38,
+        currency: "points",
     }),
 ]
