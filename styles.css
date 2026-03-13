@@ -128,3 +128,10 @@ h5 {
 #UPboost {
     font-size: 115%;
 }
+
+.ultraPoint {
+    background: linear-gradient(to bottom, 
+        color-mix(in srgb, var(--ultra-point-color) 80%, var(--bg-color)), 
+        color-mix(in srgb, var(--ultra-point-color) 45%, var(--bg-color))
+    );
+}

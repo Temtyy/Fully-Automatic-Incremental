@@ -1,5 +1,5 @@
 let player = {
-    points: new Decimal("1e200"),
+    points: new Decimal("1e234"),
     superPoints: new Decimal(0),
     superPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     ultraPoints: new Decimal(0),

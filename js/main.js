@@ -184,6 +184,7 @@ function getPointGain(deltaTime) {
     if (hasLevel(37, 1)) gain = gain.mul(new Decimal(1.03).pow(level(37)));
     if (hasLevel(38, 1)) gain = gain.mul(new Decimal(1.5).pow(level(38)));
     if (hasLevel(39, 1)) gain = gain.mul(new Decimal(5.25).pow(level(39)));
+    if (upgradeMaxed(40)) gain = gain.mul(50);
     gain = gain.mul(GetUltraPointEffect());
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
@@ -200,6 +201,7 @@ function getSuperPointGain() {
     points = points.pow(exponent);
     if (hasLevel(25, 1)) points = points.mul(new Decimal(1.25).pow(level(25)));
     if (hasLevel(26, 1)) points = points.mul(new Decimal(1.128).pow(level(26)));
+    if (upgradeMaxed(40)) points = points.mul(3);
     points = points.floor().sub(player.superPointsSubtracted).max(player.superPoints);
     return points;
 }
@@ -213,6 +215,7 @@ function reverseSuperPointGain() {
     if (upgradeMaxed(33)) base = base.div(1e6);
     if (hasLevel(25, 1)) points = points.div(new Decimal(1.25).pow(level(25)));
     if (hasLevel(26, 1)) points = points.div(new Decimal(1.128).pow(level(26)));
+    if (upgradeMaxed(40)) points = points.div(3);
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);
     return points;

@@ -480,4 +480,15 @@ let upgrades = [
         previousUpg: 38,
         currency: "points",
     }),
+    new upgrade({
+        id: 40,
+        name: "New points!",
+        description: "Multiply super point gain by x3 and point gain by x50.",
+        cost() {
+            return new Decimal(1);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 38,
+        currency: "ultraPoints",
+    }),
 ]
