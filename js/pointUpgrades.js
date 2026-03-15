@@ -619,4 +619,53 @@ let upgrades = [
         currency: "superPoints",
         spendsCurrency: false
     }),
+    new upgrade({
+        id: 52,
+        name: "Super point increase",
+        description: "Increase super point exponent by +0.075.",
+        cost() {
+            return new Decimal(2.25e35);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 51,
+        currency: "superPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 53,
+        name: "One with a huge level cap: The extension",
+        description: "Multiply point gain by x1.01 every level.",
+        cost() {
+            return new Decimal("3e342").mul(new Decimal(1.02).pow(this.level));
+        },
+        maxLevel: new Decimal(10000),
+        previousUpg: 19,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 54,
+        name: "A help",
+        description: "Multiply point gain by x10.",
+        cost() {
+            return new Decimal("1e343").mul(new Decimal(10).pow(this.level));
+        },
+        maxLevel: new Decimal(4),
+        previousUpg: 19,
+        currency: "points",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 55,
+        name: "Increased ultra boost again",
+        description: "Multiply UP boost's exponent by x2.",
+        cost() {
+            return new Decimal(7.5e14);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 19,
+        currency: "ultraPoints",
+        tooltip: "x=>x<sup>2</sup>",
+        spendsCurrency: false
+    }),
 ]
