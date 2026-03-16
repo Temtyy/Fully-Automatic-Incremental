@@ -1,7 +1,12 @@
 let bulkBuyAmount = 1024;
 
+let saveLoop = setInterval(function() {
+    save();
+}, 15000);
+
 $( document ).ready(function() {
     //startup stuff
+    load();
     const pointDisplay = $( "#points" );
     pointDisplay.text(format(player.points));
     //generating upgrades
@@ -22,6 +27,9 @@ $( document ).ready(function() {
         lastTime = Date.now();
         setInterval(() => {mainLoop(Date.now());}, 50);
     });
+    if (player.points.gte(0.00001)) {
+        $("#start")[0].click();
+    }
     //tabs
     $("#toAchTab").on("click", function() {
         $("#game").addClass("hidden");
@@ -35,6 +43,20 @@ $( document ).ready(function() {
     for (let i = 0; i < achievements.length; i++) {
         generateAchievement(i);
     }
+    let tooltip = $("<div class='custom-tooltip'></div>").appendTo("body");
+
+    $(document).on("mouseenter", "[data-tooltip]", function () {
+        let text = $(this).attr("data-tooltip");
+        if (!text) return;
+        tooltip.html(text).css({"opacity": 1});
+        let rect = this.getBoundingClientRect();
+        tooltip.css({
+            top: rect.top + window.scrollY - tooltip.outerHeight() - 8,
+            left: rect.left + window.scrollX + rect.width / 2 - tooltip.outerWidth() / 2
+        });
+    }).on("mouseleave", "[data-tooltip]", function () {
+        tooltip.css({"opacity": 0});
+    });
 });
 
 let lastTime = 0;
@@ -48,9 +70,7 @@ function mainLoop(currentTime) {
     for (let i = 0; i < upgrades.length; i++) {
         if ((upgrades[i].previousUpg == -1 || upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)) && upgrades[i].level.lt(upgrades[i].maxLevel)) {
             $( "#upgrade-" + i ).removeClass("hidden");
-            for (let k = 0; k < bulkBuyAmount; k++) {
-                upgrades[i].buyUpgrade();
-            }
+            for (let k = 0; k < bulkBuyAmount && upgrades[i].buyUpgrade(); k++) {}
         }
         else {
             $( "#upgrade-" + i ).addClass("hidden");
@@ -70,16 +90,23 @@ function mainLoop(currentTime) {
     $("#points").text(format(player.points));
     $("#pps").text(format(getPointGain(1)));
     //super points
-    if (player.points.gte(1e100) || player.superPoints.gte(0.00001)) $( "#superPointSection").removeClass("hidden");
+    if (player.points.gte(1e100) || player.superPoints.gte(0.00001)) $( "#superPointSection" ).removeClass("hidden");
     player.superPoints = getSuperPointGain();
     $("#superPoints").text(format(player.superPoints));
     $("#nextSP").text(format(reverseSuperPointGain()));
+    //ultra points
+    if (player.superPoints.gte(5e19) || player.ultraPoints.gte(0.00001)) $( "#ultraPointSection" ).removeClass("hidden");
+    player.ultraPoints = getUltraPointGain();
+    $("#ultraPoints").text(format(player.ultraPoints));
+    $("#UPboost").text(format(GetUltraPointEffect()));
+    $("#nextUP").text(format(reverseUltraPointGain()));
 }
 
 function generateUpgrade(id, section) {
     let upgradeBox = $("<div>", {
         class: "upgrade " + ((section != "point") ? section : ""),
-        id: "upgrade-" + id
+        id: "upgrade-" + id,
+        "data-tooltip": (upgrades[id].tooltip ? upgrades[id].tooltip : "")
     });
 
     let title = $("<span>", {
@@ -117,7 +144,8 @@ function generateUpgrade(id, section) {
 function generateAchievement(id) {
     let achBox = $("<div>", {
         class: "achievement",
-        id: "achievement-" + id
+        id: "achievement-" + id,
+        "data-tooltip": (achievements[id].tooltip ? achievements[id].tooltip : "")
     });
 
     if (!achievements[id].unlocked()) {
@@ -178,6 +206,21 @@ function getPointGain(deltaTime) {
     if (hasLevel(35, 1)) gain = gain.mul(new Decimal(1.1).pow(level(35)));
     if (hasLevel(36, 1)) gain = gain.pow(new Decimal(1.05).pow(level(36)));
     if (hasLevel(37, 1)) gain = gain.mul(new Decimal(1.03).pow(level(37)));
+    if (hasLevel(38, 1)) gain = gain.mul(new Decimal(1.5).pow(level(38)));
+    if (hasLevel(39, 1)) gain = gain.mul(new Decimal(5.25).pow(level(39)));
+    if (upgradeMaxed(40)) gain = gain.mul(50);
+    if (upgradeMaxed(41)) gain = gain.mul(1000);
+    if (upgradeMaxed(42)) gain = gain.mul(500);
+    if (hasLevel(43, 1)) gain = gain.mul(new Decimal(99).pow(level(43)));
+    if (upgradeMaxed(44)) gain = gain.mul(25);
+    if (upgradeMaxed(45)) gain = gain.mul(250);
+    if (upgradeMaxed(46)) gain = gain.mul(69);
+    if (upgradeMaxed(47)) gain = gain.mul(1000);
+    if (upgradeMaxed(49)) gain = gain.mul(2500);
+    if (upgradeMaxed(51)) gain = gain.mul(10000);
+    if (hasLevel(53, 1)) gain = gain.mul(new Decimal(1.01).pow(level(53)));
+    if (hasLevel(54, 1)) gain = gain.mul(new Decimal(10).pow(level(54)));
+    gain = gain.mul(GetUltraPointEffect());
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }
@@ -186,6 +229,7 @@ function getSuperPointGain() {
     let points = player.points;
     let exponent = new Decimal(0.1);
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
+    if (upgradeMaxed(52)) exponent = exponent.add(0.075);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);
@@ -193,6 +237,9 @@ function getSuperPointGain() {
     points = points.pow(exponent);
     if (hasLevel(25, 1)) points = points.mul(new Decimal(1.25).pow(level(25)));
     if (hasLevel(26, 1)) points = points.mul(new Decimal(1.128).pow(level(26)));
+    if (upgradeMaxed(40)) points = points.mul(3);
+    if (upgradeMaxed(49)) points = points.mul(12.5);
+    if (upgradeMaxed(51)) points = points.mul(25);
     points = points.floor().sub(player.superPointsSubtracted).max(player.superPoints);
     return points;
 }
@@ -201,12 +248,44 @@ function reverseSuperPointGain() {
     let points = player.superPoints.add(1).add(player.superPointsSubtracted);
     let exponent = new Decimal(0.1);
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
+    if (upgradeMaxed(52)) exponent = exponent.add(0.075);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);
     if (hasLevel(25, 1)) points = points.div(new Decimal(1.25).pow(level(25)));
     if (hasLevel(26, 1)) points = points.div(new Decimal(1.128).pow(level(26)));
+    if (upgradeMaxed(40)) points = points.div(3);
+    if (upgradeMaxed(49)) points = points.div(12.5);
+    if (upgradeMaxed(51)) points = points.div(25);
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);
     return points;
+}
+
+function getUltraPointGain() {
+    let points = player.superPoints;
+    let exponent = new Decimal(0.4);
+    let base = new Decimal(1e20);
+    points = points.div(base);
+    points = points.pow(exponent);
+    points = points.floor().sub(player.ultraPointsSubtracted).max(player.ultraPoints);
+    return points;
+}
+
+function reverseUltraPointGain() {
+    let points = player.ultraPoints.add(1).add(player.ultraPointsSubtracted);
+    let exponent = new Decimal(0.4);
+    let base = new Decimal(1e20);
+    points = points.pow(new Decimal(1).div(exponent));
+    points = points.mul(base);
+    return points;
+}
+
+function GetUltraPointEffect() {
+    let points = player.ultraPoints.add(1);
+    let exponent = new Decimal(0.5);
+    if (upgradeMaxed(48)) exponent = exponent.add(0.25);
+    if (upgradeMaxed(50)) exponent = exponent.add(0.25);
+    if (upgradeMaxed(55)) exponent = exponent.mul(2);
+    return points.pow(exponent);
 }

@@ -1,7 +1,8 @@
 const achievements = [
     {
         title: "The beginning",
-        description: "Start the game. Reward: Unlock 4 new achievements.",
+        description: "Start the game.",
+        tooltip: "Reward: Unlock 4 new achievements.",
         unlocked() { return getPointGain(1).gt(0) },
         visible() { return true; }
     },
@@ -26,6 +27,7 @@ const achievements = [
     {
         title: "Something new",
         description: "Get 1e100 points.",
+        tooltip: "Reward: Unlock 5 new achievements.",
         unlocked() { return player.points.gte(1e100) },
         visible() { return hasAch(0); }
     },
