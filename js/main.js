@@ -1,7 +1,12 @@
 let bulkBuyAmount = 1024;
 
+let saveLoop = setInterval(function() {
+    save();
+}, 15000);
+
 $( document ).ready(function() {
     //startup stuff
+    load();
     const pointDisplay = $( "#points" );
     pointDisplay.text(format(player.points));
     //generating upgrades
@@ -22,6 +27,9 @@ $( document ).ready(function() {
         lastTime = Date.now();
         setInterval(() => {mainLoop(Date.now());}, 50);
     });
+    if (player.points.gte(0.00001)) {
+        $("#start")[0].click();
+    }
     //tabs
     $("#toAchTab").on("click", function() {
         $("#game").addClass("hidden");
@@ -82,12 +90,12 @@ function mainLoop(currentTime) {
     $("#points").text(format(player.points));
     $("#pps").text(format(getPointGain(1)));
     //super points
-    if (player.points.gte(1e100) || player.superPoints.gte(0.00001)) $( "#superPointSection").removeClass("hidden");
+    if (player.points.gte(1e100) || player.superPoints.gte(0.00001)) $( "#superPointSection" ).removeClass("hidden");
     player.superPoints = getSuperPointGain();
     $("#superPoints").text(format(player.superPoints));
     $("#nextSP").text(format(reverseSuperPointGain()));
     //ultra points
-    if (player.superPoints.gte(5e19) || player.ultraPoints.gte(0.00001)) $( "#ultraPointSection").removeClass("hidden");
+    if (player.superPoints.gte(5e19) || player.ultraPoints.gte(0.00001)) $( "#ultraPointSection" ).removeClass("hidden");
     player.ultraPoints = getUltraPointGain();
     $("#ultraPoints").text(format(player.ultraPoints));
     $("#UPboost").text(format(GetUltraPointEffect()));

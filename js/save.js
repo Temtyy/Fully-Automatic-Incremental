@@ -16,6 +16,8 @@ function serializePlayer() {
         points: player.points.toString(),
         superPoints: player.superPoints.toString(),
         superPointsSubtracted: player.superPointsSubtracted.toString(),
+        ultraPoints: player.ultraPoints.toString(),
+        ultraPointsSubtracted: player.ultraPointsSubtracted.toString(),
         upgrades: upgradeTable
     }
 }
@@ -29,6 +31,8 @@ function deserializePlayer(save) {
         points: new Decimal(save.points),
         superPoints: new Decimal(save.superPoints),
         superPointsSubtracted: new Decimal(save.superPointsSubtracted),
+        ultraPoints: new Decimal(save.ultraPoints),
+        ultraPointsSubtracted: new Decimal(save.ultraPointsSubtracted),
         upgrades: upgradeTable
     }
 }
@@ -40,14 +44,29 @@ function save() {
 
 function load() {
     let saveFile = localStorage.getItem("fullyAutomaticSaveFile");
-    saveFile = JSON.parse(atob(saveFile));
-    player = deserializePlayer(saveFile);
-    for (let i = 0; i < upgrades.length; i++) {
-        if ((upgrades[i].previousUpg == -1 || upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)) && upgrades[i].level.lt(upgrades[i].maxLevel)) {
-            $( "#upgrade-" + i ).removeClass("hidden");
-        }
-        else {
-            $( "#upgrade-" + i ).addClass("hidden");
+    if (saveFile != null) {
+        saveFile = JSON.parse(atob(saveFile));
+        player = deserializePlayer(saveFile);
+        for (let i = 0; i < player.upgrades.length; i++) {
+            upgrades[i].level = player.upgrades[i];
         }
     }
+}
+
+function importSave() {
+    let saveFile = prompt("Input your save file here:");
+    if (saveFile != null && save != "") {
+        saveFile = JSON.parse(atob(saveFile));
+        player = deserializePlayer(saveFile);
+        for (let i = 0; i < player.upgrades.length; i++) {
+            upgrades[i].level = player.upgrades[i];
+        }
+    }
+}
+
+function exportSave() {
+    let saveFile = btoa(JSON.stringify(serializePlayer()));
+    navigator.clipboard.writeText(saveFile)
+        .then(() => console.log("Exported save successfully!"))
+        .catch(err => console.error("Error while exporting save:", err))
 }
