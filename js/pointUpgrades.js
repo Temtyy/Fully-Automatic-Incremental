@@ -245,7 +245,8 @@ let upgrades = [
         maxLevel: new Decimal(100000),
         previousUpg: 9,
         currency: "points",
-        spendsCurrency: false
+        spendsCurrency: false,
+        tooltip() {return "Current boost: " + format(new Decimal(1.001).pow(this.level))}
     }),
     new upgrade({
         id: 20,
@@ -375,6 +376,7 @@ let upgrades = [
         maxLevel: new Decimal(1),
         previousUpg: 29,
         currency: "points",
+        tooltip: "0.1 => 0.125"
     }),
     new upgrade({
         id: 31,
@@ -629,7 +631,8 @@ let upgrades = [
         maxLevel: new Decimal(1),
         previousUpg: 51,
         currency: "superPoints",
-        spendsCurrency: false
+        spendsCurrency: false,
+        tooltip: "0.125 => 0.2"
     }),
     new upgrade({
         id: 53,
@@ -641,7 +644,8 @@ let upgrades = [
         maxLevel: new Decimal(10000),
         previousUpg: 19,
         currency: "points",
-        spendsCurrency: false
+        spendsCurrency: false,
+        tooltip() {return ("Current boost: " + format(new Decimal(1.01).pow(this.level)))}
     }),
     new upgrade({
         id: 54,
@@ -666,6 +670,33 @@ let upgrades = [
         previousUpg: 19,
         currency: "ultraPoints",
         tooltip: "x=>x<sup>2</sup>",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 56,
+        name: "A dynamic upgrade!?",
+        description: "Multiply point gain by log<sub>250</sub>(super points).",
+        cost() {
+            return new Decimal(1e66);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 55,
+        currency: "superPoints",
+        spendsCurrency: false,
+        tooltip() {return "This upgrade is important, and can always be seen by choosing the \"important\" option in upgrade display settings.<br>Current boost: " + format(player.superPoints.log10().div(new Decimal(250).log10()))},
+        important: true
+    }),
+    new upgrade({
+        id: 57,
+        name: "MASSIVE super point boost",
+        description: "Increase SP's exponent by +0.1",
+        cost() {
+            return new Decimal(5.5e18);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 56,
+        currency: "ultraPoints",
+        tooltip: "0.2 => 0.3",
         spendsCurrency: false
     }),
 ]
