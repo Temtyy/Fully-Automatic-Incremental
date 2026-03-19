@@ -7,6 +7,8 @@ let saveLoop = setInterval(function() {
 $( document ).ready(function() {
     //startup stuff
     load();
+    setTheme(player.settings.theme);
+    $("#upgDisp").text("Current upgrade display: " + String(player.settings.upgradeDisplayMode).charAt(0).toUpperCase() + String(player.settings.upgradeDisplayMode).slice(1));
     const pointDisplay = $( "#points" );
     pointDisplay.text(format(player.points));
     //generating upgrades
@@ -31,6 +33,12 @@ $( document ).ready(function() {
         $("#start")[0].click();
     }
     //tabs
+    $( document ).on("click", "[data-tab]", function() {
+        $("#game").addClass("hidden");
+        $("#achTab").addClass("hidden");
+        $("#settings").addClass("hidden");
+        $("#" + $(this).attr("data-tab")).removeClass("hidden")
+    });
     $("#toAchTab").on("click", function() {
         $("#game").addClass("hidden");
         $("#achTab").removeClass("hidden");
@@ -43,7 +51,7 @@ $( document ).ready(function() {
     for (let i = 0; i < achievements.length; i++) {
         generateAchievement(i);
     }
-    let tooltip = $("<div class='custom-tooltip'></div>").appendTo("body");
+    let tooltip = $("<div class='custom-tooltip' id='tooltip'></div>").appendTo("body");
 
     $(document).on("mouseenter", "[data-tooltip]", function () {
         let text = $(this).attr("data-tooltip");
@@ -68,12 +76,38 @@ function mainLoop(currentTime) {
     lastTime = currentTime;
     //showing the upgrades
     for (let i = 0; i < upgrades.length; i++) {
-        if ((upgrades[i].previousUpg == -1 || upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)) && upgrades[i].level.lt(upgrades[i].maxLevel)) {
+        if ( //the most convoluted code known to man
+                player.settings.upgradeDisplayMode == "all" || 
+                (
+                    player.settings.upgradeDisplayMode == "current" && 
+                    (
+                        upgrades[i].previousUpg == -1 || 
+                        upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)
+                    ) && 
+                    upgrades[i].level.lt(upgrades[i].maxLevel)
+                ) || 
+                (
+                    player.settings.upgradeDisplayMode == "important" && 
+                    (
+                        (
+                            (
+                                upgrades[i].previousUpg == -1 || 
+                                upgrades[upgrades[i].previousUpg].level.equals(upgrades[upgrades[i].previousUpg].maxLevel)
+                            ) && 
+                            upgrades[i].level.lt(upgrades[i].maxLevel)
+                        ) ||
+                        upgrades[i].important
+                    )
+                )
+            ) {
             $( "#upgrade-" + i ).removeClass("hidden");
             for (let k = 0; k < bulkBuyAmount && upgrades[i].buyUpgrade(); k++) {}
         }
         else {
             $( "#upgrade-" + i ).addClass("hidden");
+        }
+        if (typeof(upgrades[i].tooltip) == "function") {
+            $("#upgrade-" + i).attr("data-tooltip", upgrades[i].tooltip());
         }
     }
     //achievements 
@@ -221,6 +255,7 @@ function getPointGain(deltaTime) {
     if (hasLevel(53, 1)) gain = gain.mul(new Decimal(1.01).pow(level(53)));
     if (hasLevel(54, 1)) gain = gain.mul(new Decimal(10).pow(level(54)));
     gain = gain.mul(GetUltraPointEffect());
+    if (upgradeMaxed(56)) gain = gain.mul(player.superPoints.log10().div(new Decimal(250).log10()));
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }
@@ -230,6 +265,7 @@ function getSuperPointGain() {
     let exponent = new Decimal(0.1);
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
     if (upgradeMaxed(52)) exponent = exponent.add(0.075);
+    if (upgradeMaxed(57)) exponent = exponent.add(0.1);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);
@@ -249,6 +285,7 @@ function reverseSuperPointGain() {
     let exponent = new Decimal(0.1);
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
     if (upgradeMaxed(52)) exponent = exponent.add(0.075);
+    if (upgradeMaxed(57)) exponent = exponent.add(0.1);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);

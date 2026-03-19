@@ -15,11 +15,15 @@ let currentTheme = 0;
 
 function switchTheme() {
     currentTheme = (currentTheme + 1) % Object.keys(themes).length;
-    $(":root").css({
-        "--text-color": themes[Object.keys(themes)[currentTheme]].textColor,
-        "--bg-color": themes[Object.keys(themes)[currentTheme]].bgColor,
-        "--super-point-color": themes[Object.keys(themes)[currentTheme]].superPointColor
-    })
+    setTheme(Object.keys(themes)[currentTheme]);
+    player.settings.theme = Object.keys(themes)[currentTheme];
+    $("#theme").text("Current theme: " + String(player.settings.theme).charAt(0).toUpperCase() + String(player.settings.theme).slice(1))
 }
 
-switchTheme();
+function setTheme(theme) {
+    $(":root").css({
+        "--text-color": themes[theme].textColor,
+        "--bg-color": themes[theme].bgColor,
+        "--super-point-color": themes[theme].superPointColor
+    });
+}

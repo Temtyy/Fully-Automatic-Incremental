@@ -14,10 +14,12 @@
     <script src="js/main.js"></script>
     <script src="js/achievements.js"></script>
     <script src="js/themes.js"></script>
+    <script src="js/settings.js"></script>
 </head>
 <body>
     <div id="game">
-        <button id="toAchTab" class="tabBtn">🏆</button>
+        <button class="tabBtn" data-tab="achTab">🏆</button>
+        <button class="tabBtn" data-tab="settings" style="left: 66px;">⚙️</button>
         <div id="pointSection">
             <h1>You have <span id="points">0</span> points.</h1>
             <h5><span id="pps">0</span> points/s</h5>
@@ -31,11 +33,23 @@
             <h1>You have <span id="ultraPoints">0</span> ultra points, <br>which multiply point gain by x<span id="UPboost">1</span>.</h1>
             <h5>Next at <span id="nextUP">0</span> super points.</h5>
         </div>
-        <button id="export">Export save</button>
     </div>
     <div id="achTab" class="hidden">
-        <button id="toGameTab" class="tabBtn">🎮</button>
+        <button class="tabBtn" data-tab="game">🎮</button>
+        <button class="tabBtn" data-tab="settings" style="left: 66px;">⚙️</button>
         <div id="ach"></div>
+    </div>
+    <div id="settings" class="hidden">
+        <button class="tabBtn" data-tab="achTab">🏆</button>
+        <button class="tabBtn" data-tab="game" style="left: 66px;">🎮</button>
+        <button type="button" onclick="save();" id="save">Save</button>
+        <button type="button" onclick="load();" id="load">Load</button>
+        <button type="button" onclick="importSave();" id="import">Import</button>
+        <button type="button" onclick="exportSave();" id="export">Export</button>
+        <button type="button" onclick="hardReset();" id="hardReset">Hard Reset</button><hr>
+        <button type="button" onclick="changeUpgradeDisplay();" id="upgDisp">Current upgrade display: Current</button><br>
+        <button type="button" onclick="switchTheme();" id="theme">Current theme: Default</button><br><hr><br>
+        <h3>Current endgame: 1e450 points</h3>
     </div>
 </body>
 </html>

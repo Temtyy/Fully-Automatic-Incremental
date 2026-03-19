@@ -1,7 +1,7 @@
 :root {
     --text-color: #000000;
     --bg-color: #FFFFFF;
-    --super-point-color: #00ffe1;
+    --super-point-color: #005c51;
     --achievement-bg-color: #444;
     --ultra-point-color: #ff7f16;
 }
@@ -34,7 +34,7 @@ body {
     background-color: color-mix(in srgb, var(--bg-color), #888);
 }
 
-#toAchTab:active {
+.tabBtn:active {
     background: #888;
 }
 
@@ -152,4 +152,28 @@ h5 {
     z-index: 9999;
     opacity: 0;
     transition: 0.3s;
+}
+
+button[type="button"] {
+    margin: 10px;
+    font-size: 125%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: solid 2px var(--text-color);
+    border-radius: 8px;
+    transition: 0.125s ease-out;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+button[type="button"]:hover {
+    font-size: 135%;
+    background-color: color-mix(in srgb, var(--bg-color), #888);
+}
+
+button[type="button"]:active {
+    background: #888;
+}
+
+#hardReset {
+    background-color: red;
 }

@@ -4,7 +4,11 @@ let player = {
     superPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     ultraPoints: new Decimal(0),
     ultraPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
-    upgrades: []
+    upgrades: [],
+    settings: {
+        upgradeDisplayMode: "current",
+        theme: "default"
+    }
 };
 
 function serializePlayer() {
@@ -18,7 +22,8 @@ function serializePlayer() {
         superPointsSubtracted: player.superPointsSubtracted.toString(),
         ultraPoints: player.ultraPoints.toString(),
         ultraPointsSubtracted: player.ultraPointsSubtracted.toString(),
-        upgrades: upgradeTable
+        upgrades: upgradeTable,
+        settings: player.settings
     }
 }
 
@@ -33,7 +38,8 @@ function deserializePlayer(save) {
         superPointsSubtracted: new Decimal(save.superPointsSubtracted),
         ultraPoints: new Decimal(save.ultraPoints),
         ultraPointsSubtracted: new Decimal(save.ultraPointsSubtracted),
-        upgrades: upgradeTable
+        upgrades: upgradeTable,
+        settings: save.settings
     }
 }
 
@@ -69,4 +75,11 @@ function exportSave() {
     navigator.clipboard.writeText(saveFile)
         .then(() => console.log("Exported save successfully!"))
         .catch(err => console.error("Error while exporting save:", err))
+}
+
+function hardReset() {
+    if (confirm("Are you sure you want to reset your save? Your save will be lost FOREVER!")) {
+        localStorage.removeItem("fullyAutomaticSaveFile");
+        location.reload();
+    }
 }
