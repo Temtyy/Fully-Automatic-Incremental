@@ -134,6 +134,12 @@ function mainLoop(currentTime) {
     $("#ultraPoints").text(format(player.ultraPoints));
     $("#UPboost").text(format(GetUltraPointEffect()));
     $("#nextUP").text(format(reverseUltraPointGain()));
+    //mega points
+    if (upgradeMaxed(60)) $( "#megaPointSection" ).removeClass("hidden");
+    player.megaPoints = getMegaPointGain();
+    $("#megaPoints").text(format(player.megaPoints));
+    $("#MPboost").text(format(GetMegaPointEffect()));
+    $("#nextMP").text(format(reverseMegaPointGain()));
 }
 
 function generateUpgrade(id, section) {
@@ -256,6 +262,7 @@ function getPointGain(deltaTime) {
     if (hasLevel(54, 1)) gain = gain.mul(new Decimal(10).pow(level(54)));
     gain = gain.mul(GetUltraPointEffect());
     if (upgradeMaxed(56)) gain = gain.mul(player.superPoints.log10().div(new Decimal(250).log10()));
+    if (upgradeMaxed(58)) gain = gain.pow(1.01);
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }
@@ -266,6 +273,7 @@ function getSuperPointGain() {
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
     if (upgradeMaxed(52)) exponent = exponent.add(0.075);
     if (upgradeMaxed(57)) exponent = exponent.add(0.1);
+    if (upgradeMaxed(59)) exponent = exponent.add(0.2);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);
@@ -286,6 +294,7 @@ function reverseSuperPointGain() {
     if (upgradeMaxed(30)) exponent = exponent.add(0.025);
     if (upgradeMaxed(52)) exponent = exponent.add(0.075);
     if (upgradeMaxed(57)) exponent = exponent.add(0.1);
+    if (upgradeMaxed(59)) exponent = exponent.add(0.2);
     let base = new Decimal(1e100);
     if (upgradeMaxed(31)) base = base.div(1e4);
     if (upgradeMaxed(33)) base = base.div(1e6);
@@ -324,5 +333,31 @@ function GetUltraPointEffect() {
     if (upgradeMaxed(48)) exponent = exponent.add(0.25);
     if (upgradeMaxed(50)) exponent = exponent.add(0.25);
     if (upgradeMaxed(55)) exponent = exponent.mul(2);
+    if (upgradeMaxed(60)) exponent = exponent.add(1)
+    return points.pow(exponent);
+}
+
+function getMegaPointGain() {
+    let points = player.ultraPoints;
+    let exponent = new Decimal(0.1);
+    let base = new Decimal(1e139);
+    points = points.div(base);
+    points = points.pow(exponent);
+    points = points.floor().sub(player.megaPointsSubtracted).max(player.megaPoints);
+    return points;
+}
+
+function reverseMegaPointGain() {
+    let points = player.megaPoints.add(1).add(player.megaPointsSubtracted);
+    let exponent = new Decimal(0.1);
+    let base = new Decimal(1e139);
+    points = points.pow(new Decimal(1).div(exponent));
+    points = points.mul(base);
+    return points;
+}
+
+function GetMegaPointEffect() {
+    let points = player.megaPoints.add(1);
+    let exponent = new Decimal(0.25);
     return points.pow(exponent);
 }

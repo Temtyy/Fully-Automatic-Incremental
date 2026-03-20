@@ -2,12 +2,14 @@ const themes = {
     default: {
         textColor: "#000000",
         bgColor: "#FFFFFF",
-        superPointColor: "#005c51"
+        superPointColor: "#005c51",
+        megaPointColor: "#308f00"
     },
     dark: {
         textColor: "#FFFFFF",
         bgColor: "#000000",
-        superPointColor: "#00ffe1"
+        superPointColor: "#00ffe1",
+        megaPointColor: "#4de600"
     }
 }
 
@@ -24,6 +26,7 @@ function setTheme(theme) {
     $(":root").css({
         "--text-color": themes[theme].textColor,
         "--bg-color": themes[theme].bgColor,
-        "--super-point-color": themes[theme].superPointColor
+        "--super-point-color": themes[theme].superPointColor,
+        "--mega-point-color": themes[theme].megaPointColor
     });
 }

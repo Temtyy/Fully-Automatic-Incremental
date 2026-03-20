@@ -689,7 +689,7 @@ let upgrades = [
     new upgrade({
         id: 57,
         name: "MASSIVE super point boost",
-        description: "Increase SP's exponent by +0.1",
+        description: "Increase SP's exponent by +0.1.",
         cost() {
             return new Decimal(5.5e18);
         },
@@ -697,6 +697,44 @@ let upgrades = [
         previousUpg: 56,
         currency: "ultraPoints",
         tooltip: "0.2 => 0.3",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 58,
+        name: "Should I do it?",
+        description: "Raise point gain by ^1.01.",
+        cost() {
+            return new Decimal(2.5e37);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 57,
+        currency: "ultraPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 59,
+        name: "Eh, screw it.",
+        description: "Increase your points by a lot by increasing SP's exponent by +0.2.",
+        cost() {
+            return new Decimal(1.25e38);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 58,
+        currency: "ultraPoints",
+        tooltip: "0.3 => 0.5",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 60,
+        name: "Something new's coming...",
+        description: "Increase UP effect's exponent by +1.",
+        cost() {
+            return new Decimal(1.5e92);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 59,
+        currency: "ultraPoints",
+        tooltip: "x<sup>2</sup> => x<sup>3</sup>",
         spendsCurrency: false
     }),
 ]

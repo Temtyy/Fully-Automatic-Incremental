@@ -4,6 +4,7 @@
     --super-point-color: #005c51;
     --achievement-bg-color: #444;
     --ultra-point-color: #ff7f16;
+    --mega-point-color: #308f00;
 }
 
 @media (max-width: 800px) {
@@ -152,6 +153,24 @@ h5 {
     background: linear-gradient(to bottom, 
         color-mix(in srgb, var(--ultra-point-color) 80%, var(--bg-color)), 
         color-mix(in srgb, var(--ultra-point-color) 45%, var(--bg-color))
+    );
+}
+
+#megaPoints, #MPboost {
+    font-size: 150%;
+    text-shadow: 2px 2px 10px var(--mega-point-color),
+        -2px -2px 10px var(--mega-point-color);
+    color: var(--mega-point-color);
+}
+
+#MPboost {
+    font-size: 115%;
+}
+
+.megaPoint {
+    background: linear-gradient(to bottom, 
+        color-mix(in srgb, var(--mega-point-color) 80%, var(--bg-color)), 
+        color-mix(in srgb, var(--mega-point-color) 45%, var(--bg-color))
     );
 }
 

@@ -1,9 +1,11 @@
 let player = {
-    points: new Decimal("0"),
+    points: new Decimal("1e500"),
     superPoints: new Decimal(0),
     superPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     ultraPoints: new Decimal(0),
     ultraPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
+    megaPoints: new Decimal(0),
+    megaPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     upgrades: [],
     settings: {
         upgradeDisplayMode: "current",
