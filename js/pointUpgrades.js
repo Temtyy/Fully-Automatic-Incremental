@@ -737,4 +737,104 @@ let upgrades = [
         tooltip: "x<sup>2</sup> => x<sup>3</sup>",
         spendsCurrency: false
     }),
+    new upgrade({
+        id: 61,
+        name: "New points!",
+        description: "Multiply your point gain by x1e10.",
+        cost() {
+            return new Decimal(1);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 60,
+        currency: "megaPoints",
+    }),
+    new upgrade({
+        id: 62,
+        name: "A generic upgrade",
+        description: "Multiply super point gain by 1e10.",
+        cost() {
+            return new Decimal(4.5e144);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 61,
+        currency: "ultraPoints",
+        spendsCurrency: false
+    }),
+    new upgrade({
+        id: 63,
+        name: "Another generic upgrade",
+        description: "Multiply your ultra point gain by x1e10.",
+        cost() {
+            return new Decimal(225);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 62,
+        currency: "megaPoints",
+    }),
+    new upgrade({
+        id: 64,
+        name: "I don't have any ideas for new upgrades",
+        description: "Multiply point gain by log<sub>15000</sub>(ultra points).",
+        cost() {
+            return new Decimal(6e188);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 63,
+        currency: "ultraPoints",
+        spendsCurrency: false,
+        tooltip() { return ("Current boost: " + format(player.ultraPoints.log10().div(new Decimal(15000).log10())))},
+        important: true
+    }),
+    new upgrade({
+        id: 65,
+        name: "Upgrade title",
+        description: "Increase mega point gain by +0.125.",
+        cost() {
+            return new Decimal(115000);
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 64,
+        currency: "megaPoints",
+        spendsCurrency: false,
+        tooltip() { return "0.1 => 0.225"},
+    }),
+    new upgrade({
+        id: 66,
+        name: "One with a huge level cap: The extension: The second extension",
+        description: "Multiply point gain by x1.02 every level.",
+        cost() {
+            return new Decimal("1e1000").mul(new Decimal(1.05).pow(this.level).pow(hasLevel(66, 100) ? this.level.pow(0.1) : 1));
+        },
+        maxLevel: new Decimal(10000),
+        previousUpg: 65,
+        currency: "points",
+        spendsCurrency: false,
+        tooltip() {return ("Current boost: " + format(new Decimal(1.02).pow(this.level)))}
+    }),
+    new upgrade({
+        id: 67,
+        name: "A special upgrade",
+        description: "Level 1: Multiply point gain by 1e11.<br>Level 2: Multiply super point gain by 1e10.<br>Level 3: Multiply ultra point gain by 1e9.",
+        cost() {
+            return new Decimal("1e1001").pow(new Decimal(1.059).pow(this.level)).div(hasLevel(67, 2) ? 1e2 : 1);
+        },
+        maxLevel: new Decimal(3),
+        previousUpg: 65,
+        currency: "points",
+        spendsCurrency: false,
+    }),
+    new upgrade({
+        id: 68,
+        name: "Dynamic",
+        description: "Multiply point gain by super points<sup>0.02</sup>.",
+        cost() {
+            return new Decimal("1.5e1250");
+        },
+        maxLevel: new Decimal(1),
+        previousUpg: 67,
+        currency: "points",
+        spendsCurrency: false,
+        important: true,
+        tooltip() {return ("Current boost: x" + format(player.superPoints.pow(0.02)))}
+    }),
 ]

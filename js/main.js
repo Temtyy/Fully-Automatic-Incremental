@@ -77,7 +77,7 @@ function mainLoop(currentTime) {
     //showing the upgrades
     for (let i = 0; i < upgrades.length; i++) {
         if ( //the most convoluted code known to man
-                player.settings.upgradeDisplayMode == "all" || 
+                (player.settings.upgradeDisplayMode == "all" && (upgrades[i].previousUpg !== -1 ? upgradeMaxed(upgrades[i].previousUpg) : true)) || 
                 (
                     player.settings.upgradeDisplayMode == "current" && 
                     (
@@ -96,7 +96,7 @@ function mainLoop(currentTime) {
                             ) && 
                             upgrades[i].level.lt(upgrades[i].maxLevel)
                         ) ||
-                        upgrades[i].important
+                        (upgrades[i].important && upgradeMaxed(upgrades[i].previousUpg))
                     )
                 )
             ) {
@@ -263,6 +263,11 @@ function getPointGain(deltaTime) {
     gain = gain.mul(GetUltraPointEffect());
     if (upgradeMaxed(56)) gain = gain.mul(player.superPoints.log10().div(new Decimal(250).log10()));
     if (upgradeMaxed(58)) gain = gain.pow(1.01);
+    if (upgradeMaxed(61)) gain = gain.mul(1e10);
+    if (upgradeMaxed(64)) gain = gain.mul(player.ultraPoints.log10().div(new Decimal(15000).log10()));
+    if (hasLevel(66, 1)) gain = gain.mul(new Decimal(1.02).pow(level(66)));
+    if (hasLevel(67, 1)) gain = gain.mul(1e11);
+    if (upgradeMaxed(68)) gain = gain.mul(player.superPoints.pow(0.02));
     if (player.devSpeed) return gain.mul(deltaTime).mul(player.devSpeed);
     return gain.mul(deltaTime);
 }
@@ -284,6 +289,9 @@ function getSuperPointGain() {
     if (upgradeMaxed(40)) points = points.mul(3);
     if (upgradeMaxed(49)) points = points.mul(12.5);
     if (upgradeMaxed(51)) points = points.mul(25);
+    points = points.mul(GetMegaPointEffect());
+    if (upgradeMaxed(62)) points = points.mul(1e10);
+    if (hasLevel(67, 2)) points = points.mul(1e10);
     points = points.floor().sub(player.superPointsSubtracted).max(player.superPoints);
     return points;
 }
@@ -303,6 +311,9 @@ function reverseSuperPointGain() {
     if (upgradeMaxed(40)) points = points.div(3);
     if (upgradeMaxed(49)) points = points.div(12.5);
     if (upgradeMaxed(51)) points = points.div(25);
+    points = points.div(GetMegaPointEffect());
+    if (upgradeMaxed(62)) points = points.div(1e10);
+    if (hasLevel(67, 2)) points = points.div(1e10);
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);
     return points;
@@ -314,6 +325,8 @@ function getUltraPointGain() {
     let base = new Decimal(1e20);
     points = points.div(base);
     points = points.pow(exponent);
+    if (upgradeMaxed(63)) points = points.mul(1e10);
+    if (hasLevel(67, 3)) points = points.mul(1e9);
     points = points.floor().sub(player.ultraPointsSubtracted).max(player.ultraPoints);
     return points;
 }
@@ -322,6 +335,8 @@ function reverseUltraPointGain() {
     let points = player.ultraPoints.add(1).add(player.ultraPointsSubtracted);
     let exponent = new Decimal(0.4);
     let base = new Decimal(1e20);
+    if (upgradeMaxed(63)) points = points.div(1e10);
+    if (hasLevel(67, 3)) points = points.div(1e9);
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);
     return points;
@@ -340,6 +355,7 @@ function GetUltraPointEffect() {
 function getMegaPointGain() {
     let points = player.ultraPoints;
     let exponent = new Decimal(0.1);
+    if (upgradeMaxed(65)) exponent = exponent.add(0.125);
     let base = new Decimal(1e139);
     points = points.div(base);
     points = points.pow(exponent);
@@ -350,6 +366,7 @@ function getMegaPointGain() {
 function reverseMegaPointGain() {
     let points = player.megaPoints.add(1).add(player.megaPointsSubtracted);
     let exponent = new Decimal(0.1);
+    if (upgradeMaxed(65)) exponent = exponent.add(0.125);
     let base = new Decimal(1e139);
     points = points.pow(new Decimal(1).div(exponent));
     points = points.mul(base);

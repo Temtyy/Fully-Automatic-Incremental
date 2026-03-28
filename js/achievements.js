@@ -31,4 +31,34 @@ const achievements = [
         unlocked() { return player.points.gte(1e100) },
         visible() { return hasAch(0); }
     },
+    {
+        title: "That's a lot",
+        description: "Get 100 super points.",
+        unlocked() { return player.superPoints.gte(100) },
+        visible() { return hasAch(4); }
+    },
+    {
+        title: "Back to the points",
+        description: "Get the \"Something new for normal points\" upgrade.",
+        unlocked() { return upgradeMaxed(27) },
+        visible() { return hasAch(4); }
+    },
+    {
+        title: "Huge boost",
+        description: "Buy 1 level of the \"High cost, high reward\" upgrade.",
+        unlocked() { return hasLevel(33, 1) },
+        visible() { return hasAch(4); }
+    },
+    {
+        title: "Dynamic upgrade!? Impossible!",
+        description: "Buy the \"A dynamic upgrade!?\" upgrade.",
+        unlocked() { return upgradeMaxed(56) },
+        visible() { return hasAch(4); }
+    },
+    {
+        title: "New points again",
+        description: "Get 1 ultra point.",
+        unlocked() { return player.ultraPoints.gte(1) },
+        visible() { return hasAch(4); }
+    },
 ];

@@ -1,5 +1,5 @@
 let player = {
-    points: new Decimal("1e500"),
+    points: new Decimal("1e100"),
     superPoints: new Decimal(0),
     superPointsSubtracted: new Decimal(0), //worst way to do this but i'm making it like this anyway
     ultraPoints: new Decimal(0),
@@ -9,7 +9,9 @@ let player = {
     upgrades: [],
     settings: {
         upgradeDisplayMode: "current",
-        theme: "default"
+        theme: "default",
+        cloudSaving: false,
+        autoThemeSet: true
     }
 };
 
@@ -24,6 +26,8 @@ function serializePlayer() {
         superPointsSubtracted: player.superPointsSubtracted.toString(),
         ultraPoints: player.ultraPoints.toString(),
         ultraPointsSubtracted: player.ultraPointsSubtracted.toString(),
+        megaPoints: player.megaPoints.toString(),
+        megaPointsSubtracted: player.megaPointsSubtracted.toString(),
         upgrades: upgradeTable,
         settings: player.settings
     }
@@ -40,6 +44,8 @@ function deserializePlayer(save) {
         superPointsSubtracted: new Decimal(save.superPointsSubtracted),
         ultraPoints: new Decimal(save.ultraPoints),
         ultraPointsSubtracted: new Decimal(save.ultraPointsSubtracted),
+        megaPoints: new Decimal(save.megaPoints),
+        megaPointsSubtracted: new Decimal(save.megaPointsSubtracted),
         upgrades: upgradeTable,
         settings: save.settings
     }
@@ -48,6 +54,14 @@ function deserializePlayer(save) {
 function save() {
     let saveFile = btoa(JSON.stringify(serializePlayer()));
     localStorage.setItem("fullyAutomaticSaveFile", saveFile);
+    if (player.settings.cloudSaving) {
+        window.top.postMessage({
+            action: "save",
+            slot: 0,
+            label: "Auto-save",
+            data: saveFile
+        }, "https://galaxy.click");
+    }
 }
 
 function load() {
@@ -63,7 +77,7 @@ function load() {
 
 function importSave() {
     let saveFile = prompt("Input your save file here:");
-    if (saveFile != null && save != "") {
+    if (saveFile != null && saveFile != "") {
         saveFile = JSON.parse(atob(saveFile));
         player = deserializePlayer(saveFile);
         for (let i = 0; i < player.upgrades.length; i++) {

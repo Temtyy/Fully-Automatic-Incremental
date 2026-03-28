@@ -2,7 +2,7 @@
     --text-color: #000000;
     --bg-color: #FFFFFF;
     --super-point-color: #005c51;
-    --achievement-bg-color: #444;
+    --achievement-bg-color: #BBB;
     --ultra-point-color: #ff7f16;
     --mega-point-color: #308f00;
 }
@@ -210,4 +210,14 @@ button[type="button"]:active {
 
 #hardReset {
     background-color: red;
+}
+
+.forMobile {
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .forMobile {
+        display: inline;
+    }
 }
